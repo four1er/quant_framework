@@ -1,0 +1,39 @@
+# LightQuant 示例配置文件 - GPTQ量化
+# 用法: python -m quant_framework -c configs/example_gptq.yaml
+
+base:
+  seed: 42
+  device: "cuda"
+
+model:
+  type: "llama"
+  path: "/path/to/your/model"
+  dtype: "float16"
+  device_map: "auto"
+
+calib:
+  name: "c4"
+  n_samples: 128
+  seq_len: 2048
+
+quant:
+  weight:
+    method: "gptq"
+    bit: 4
+    symmetric: true
+    granularity: "per_group"
+    group_size: 128
+    
+    # GPTQ特定参数
+    damp_percent: 0.01
+    desc_act: false
+    static_groups: false
+
+eval:
+  ppl: true
+  speed: true
+  dataset: "wikitext2"
+
+save:
+  save_path: "./output/llama-gptq-w4"
+  format: "huggingface"

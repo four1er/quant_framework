@@ -1,0 +1,45 @@
+# LightQuant 示例配置文件 - AWQ量化
+# 用法: python -m quant_framework -c configs/example_awq.yaml
+
+base:
+  seed: 42
+  device: "cuda"
+
+model:
+  type: "llama"  # llama, qwen
+  path: "/path/to/your/model"
+  dtype: "float16"
+  device_map: "auto"
+
+calib:
+  name: "wikitext2"  # wikitext2, c4, custom
+  n_samples: 128
+  seq_len: 2048
+  # path: "/path/to/custom/data.json"  # 仅custom时需要
+
+quant:
+  weight:
+    method: "awq"
+    bit: 4
+    symmetric: true
+    granularity: "per_group"
+    group_size: 128
+    calib_algo: "minmax"
+  
+  # 激活量化（可选）
+  # act:
+  #   bit: 8
+  #   symmetric: true
+  #   granularity: "per_tensor"
+  #   static: false
+
+eval:
+  ppl: true
+  speed: true
+  dataset: "wikitext2"
+  seq_len: 2048
+
+save:
+  save_path: "./output/llama-awq-w4"
+  format: "vllm"  # vllm, huggingface, gguf
+  # gguf_type: "q4_k"  # 仅gguf格式时需要
